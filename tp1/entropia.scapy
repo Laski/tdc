@@ -16,13 +16,15 @@ def arp_monitor_callback(pkt):
     if ARP in pkt and pkt[ARP].op in (1,2): #who-has or is-at
         src = pkt[ARP].psrc
         dst = pkt[ARP].pdst
-
+        
         if not ipssrc.has_key(src): ipssrc[src] = 0.0
-	ipssrc[src]+= 1
+        ipssrc[src]+= 1
         if not ipsdst.has_key(dst): ipsdst[dst] = 0.0
-	ipsdst[dst]+= 1
+        ipsdst[dst]+= 1
 
-	return "H_src=%f, H_dst=%f" % (entropia(ipsdst), entropia(ipssrc))
+    return "H_src=%f, H_dst=%f" % (entropia(ipsdst), entropia(ipssrc))
 
 sniff(prn=arp_monitor_callback, filter="arp", store=0)
 
+print ipssrc
+print ipsdst
