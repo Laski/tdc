@@ -5,6 +5,7 @@ from math import log
 
 ipssrc = {}
 ipsdst = {}
+todos = []
 
 def entropia(ips):
 	N = sum(ips.values())
@@ -21,10 +22,22 @@ def arp_monitor_callback(pkt):
         ipssrc[src]+= 1
         if not ipsdst.has_key(dst): ipsdst[dst] = 0.0
         ipsdst[dst]+= 1
-
-    return "H_src=%f, H_dst=%f" % (entropia(ipsdst), entropia(ipssrc))
+        
+        todos.append((src, dst, pkt[ARP].op))
+        
+    return "Capture un paquete."
 
 sniff(prn=arp_monitor_callback, filter="arp", store=0)
 
+print
+print "Capture en total " + str(len(todos)) + " paquetes."
+print "Lista de sources:"
 print ipssrc
+print "Entropia de sources:"
+print entropia(ipssrc)
+print "Lista de destinos:"
 print ipsdst
+print "Entropia de destinos:"
+print entropia(ipsdst)
+print "Todos:"
+print todos
