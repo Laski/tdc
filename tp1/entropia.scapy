@@ -1,6 +1,5 @@
 #! /usr/bin/python
 from scapy.all import *
-import matplotlib.pyplot as plot
 
 from math import log
 
@@ -26,7 +25,7 @@ def arp_monitor_callback(pkt):
         
         todos.append((src, dst, pkt[ARP].op))
         
-    return "Capture un paquete."
+    return pkt.summary()
 
 sniff(prn=arp_monitor_callback, filter="arp", store=0)
 
@@ -42,17 +41,3 @@ print "Entropia de destinos:"
 print entropia(ipsdst)
 print "Todos:"
 print todos
-
-labels = ipsdst.keys()
-sizes = [ipsdst[key] for key in ipsdst.keys()]
-plot.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=True)
-plot.axis('equal')
-plot.show()
-
-ips = [int(ip.split(".")[3]) for ip in ipssrc]
-n, bins, patches = plot.hist(ips)
-plot.xlabel('Apariciones')
-plot.ylabel('Ultimos 8 bits de las IPs')
-#plot.plot(n)
-#plot.subplots_adjust(left=0.15)
-plot.show()
