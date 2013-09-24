@@ -17,6 +17,8 @@ def leer_entrada():
 	tuplas_txt[0] = tuplas_txt[0].strip("[")
 	tuplas_txt[-1] = tuplas_txt[-1].rstrip(")]\n")
 	tuplas_txt = [tupla + ")" for tupla in tuplas_txt]
+	#tuplas_txt = tuplas_txt[0:50]
+	
 	senders = [tupla.split("'")[1] for tupla in tuplas_txt]
 	recievers = [tupla.split("'")[3] for tupla in tuplas_txt]
 	types = [int(tupla.split("', ")[2].rstrip(")")) for tupla in tuplas_txt]
@@ -51,7 +53,7 @@ def histograma(todos):
 def histograma2d(senders, recievers):
 	senders_hosts = get_host_lista(senders)
 	recievers_hosts = get_host_lista(recievers)
-	H, xedges, yedges = np.histogram2d(senders_hosts, recievers_hosts, bins=50)
+	H, xedges, yedges = np.histogram2d(recievers_hosts, senders_hosts, bins=100)
 	#plt.colorbar()
 	extent = [0, 255, 255, 0]
 	plt.xlabel("Emisores")
@@ -95,5 +97,7 @@ senders, recievers, types = leer_entrada()
 todos = senders + recievers
 sin_repetidas = list(set(todos))
 
-#barras(sin_repetidas, senders, recievers)
+barras(sin_repetidas, senders, recievers)
+torta(sin_repetidas)
+#histograma(todos)
 histograma2d(senders, recievers)
