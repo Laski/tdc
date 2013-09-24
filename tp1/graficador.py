@@ -1,5 +1,6 @@
 #! /usr/bin/python
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
+from matplotlib import numpy as nm
 import sys
 
 def leer_entrada():
@@ -34,10 +35,19 @@ plt.pie(sizes, labels=sin_repetidas, autopct='%1.1f%%', shadow=True, colors=colo
 plt.axis('equal')
 plt.show()
 
-ips = [int(ip.split(".")[3]) for ip in todos]
-n, bins, patches = plt.hist(ips)
+hosts = [int(ip.split(".")[3]) for ip in todos]
+n, bins, patches = plt.hist(hosts)
 plt.xlabel('Apariciones')
 plt.ylabel('Ultimos 8 bits de las IPs')
 #plt.plt(n)
 #plt.subplots_adjust(left=0.15)
+plt.show()
+
+senders_hosts = [int(ip.split(".")[3]) for ip in senders]
+recievers_hosts = [int(ip.split(".")[3]) for ip in recievers]
+H, xedges, yedges = nm.histogram2d(senders_hosts, recievers_hosts, bins=40)
+#plt.colorbar()
+extent = [0, 255, 255, 0]
+plt.imshow(H, extent=extent, interpolation='nearest')
+plt.colorbar()
 plt.show()
