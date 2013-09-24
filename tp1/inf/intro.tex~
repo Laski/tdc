@@ -1,0 +1,1 @@
+El objetivo del presente trabajo es el análisis de un protocolo de envío de paquetes en una red. En particular analizaremos el protocolo ARP, primero capturando este tipo de paquetes en diferentes redes y luego analizando esos datos para sacar conclusiones acerca del comportamiento de esas redes.

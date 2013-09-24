@@ -1,0 +1,3 @@
+El objetivo del presente trabajo es el análisis de un protocolo de envío de paquetes
+
+En este taller vamos a abordar el desarrollo de tools de diagnóstico de red. El objetivo será analizar de manera interactiva el protocolo ARP [1] y sacar algunas conclusiones de cómo se comportan los hosts en un segumento de red determinado. Para ello, sugerimos el uso de dos herramientas modernas de manipulación y análisis de paquetes: Wireshark [2] y Scapy [3].
