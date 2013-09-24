@@ -1,6 +1,7 @@
 #! /usr/bin/python
+
 from matplotlib import pyplot as plt
-from matplotlib import numpy as nm
+from matplotlib import numpy as np
 import sys
 
 def leer_entrada():
@@ -25,29 +26,74 @@ def leer_entrada():
 	print(recievers)
 	print(types)
 
+def get_host(ip):
+	return int(ip.split(".")[3])
+
+def get_host_lista(ips):
+	return [get_host(ip) for ip in ips]
+
+def torta(sin_repetidas):
+	sizes = [todos.count(ip) for ip in sin_repetidas]
+	colors = ['yellowgreen', 'gold', 'lightskyblue', 'lightcoral', 'blue', 'red', 'orange', 'yellow', 'white'] * 10
+	plt.pie(sizes, labels=sin_repetidas, autopct='%1.1f%%', shadow=True, colors=colors)
+	plt.axis('equal')
+	plt.show()
+
+def histograma(todos):
+	hosts = get_host_lista(todos)
+	n, bins, patches = plt.hist(hosts)
+	plt.xlabel('Cantidad de paquetes')
+	plt.ylabel('IPs (ultimos 8 bits)')
+	#plt.plt(n)
+	#plt.subplots_adjust(left=0.15)
+	plt.show()
+
+def histograma2d(senders, recievers):
+	senders_hosts = get_host_lista(senders)
+	recievers_hosts = get_host_lista(recievers)
+	H, xedges, yedges = np.histogram2d(senders_hosts, recievers_hosts, bins=50)
+	#plt.colorbar()
+	extent = [0, 255, 255, 0]
+	plt.xlabel("Emisores")
+	plt.ylabel("Receptores")
+	plt.imshow(H, extent=extent, interpolation='nearest')
+	plt.colorbar()
+	plt.show()
+
+def barras(sin_repetidas, senders, recievers):
+	senders_hosts = get_host_lista(senders)
+	recievers_hosts = get_host_lista(recievers)
+	todas_hosts = get_host_lista(sin_repetidas)
+	todas_hosts = list(set(todas_hosts))
+	todas_hosts.sort()
+
+
+	cant_ips = len(todas_hosts)
+	count_senders = [senders_hosts.count(ip) for ip in todas_hosts]
+	count_recievers = [recievers_hosts.count(ip) for ip in todas_hosts]
+
+	fig, ax = plt.subplots()
+	index = np.arange(cant_ips)
+	bar_width = 0.3
+	opacity = 0.4
+	rects1 = plt.bar(index, count_senders, bar_width,
+	                 alpha=opacity,
+	                 color='b',
+	                 label='Emisores')
+	rects2 = plt.bar(index + bar_width, count_recievers, bar_width,
+	                 alpha=opacity,
+	                 color='g',
+	                 label='Receptores')
+	plt.xlabel('IPs (ultimos 8 bits)')
+	plt.ylabel('Cantidad de paquetes')
+	plt.xticks(index + bar_width, todas_hosts)
+	plt.legend()
+	plt.tight_layout()
+	plt.show()
+
 senders, recievers, types = leer_entrada()
 todos = senders + recievers
-
 sin_repetidas = list(set(todos))
-sizes = [todos.count(ip) for ip in sin_repetidas]
-colors = ['yellowgreen', 'gold', 'lightskyblue', 'lightcoral', 'blue', 'red', 'orange', 'yellow', 'white'] * 10
-plt.pie(sizes, labels=sin_repetidas, autopct='%1.1f%%', shadow=True, colors=colors)
-plt.axis('equal')
-plt.show()
 
-hosts = [int(ip.split(".")[3]) for ip in todos]
-n, bins, patches = plt.hist(hosts)
-plt.xlabel('Apariciones')
-plt.ylabel('Ultimos 8 bits de las IPs')
-#plt.plt(n)
-#plt.subplots_adjust(left=0.15)
-plt.show()
-
-senders_hosts = [int(ip.split(".")[3]) for ip in senders]
-recievers_hosts = [int(ip.split(".")[3]) for ip in recievers]
-H, xedges, yedges = nm.histogram2d(senders_hosts, recievers_hosts, bins=40)
-#plt.colorbar()
-extent = [0, 255, 255, 0]
-plt.imshow(H, extent=extent, interpolation='nearest')
-plt.colorbar()
-plt.show()
+#barras(sin_repetidas, senders, recievers)
+histograma2d(senders, recievers)
