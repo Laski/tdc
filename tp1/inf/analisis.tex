@@ -134,7 +134,7 @@ emisores de 2.85760098357 y en los receptores de 3.08636573523.
 \end{figure}
 
 Como se puede observar claramente en las figuras \ref{fig:torta-inv} y 
-\ref{fig:barras-inv}, hay una gran presencia del dispositivo con la IP 10.10.99.213 cuyo comportamiento se limita a generar paquetes ARP y envíarlos, nunca es el destino de una consulta who-is. Por otro lado, a éste lo siguen dos dispositivos de igual cantidad de apariciones en los paquetes: las IPs 10.10.99.138 y 10.10.99.137. En las capturas, estos dos dispositivos se encuentran siempre como IPs destino, es decir, IPs por las cuales se consulta o se informa a qué MAC corresponde.
+\ref{fig:barras-inv}, hay una gran presencia del dispositivo con la IP 10.10.99.213 cuyo comportamiento se limita a generar paquetes ARP y enviarlos, nunca es el destino de una consulta who-is. Por otro lado, a éste lo siguen dos dispositivos de igual cantidad de apariciones en los paquetes: las IPs 10.10.99.138 y 10.10.99.137. En las capturas, estos dos dispositivos se encuentran siempre como IPs destino, es decir, IPs por las cuales se consulta o se informa a qué MAC corresponde.
  
 En la figura \ref{fig:hist2d-inv} podemos ver la interacción que se corresponde con estos dispositivos. Vemos que casi la totalidad de los paquetes envíados por el dispositivo 213 están dirigidos a los dispositivos 137 y 138. Contrastando esto con los datos de los paquetes capturados vemos que el dispositivo 213 envía constantemente paquetes who-is preguntando por las IP 137 y 138, pero no se obtiene ninguna respuesta.
 Además de esto, el histograma nos muestra la interacción entre otros nodos de la red. El gráfico muestra al menos otros 5 nodos que son parte de esta interacción, lo interesante es que estos nodos no se conectan de manera centralizada.
@@ -147,7 +147,7 @@ Por otro lado es necesario aclarar que los nodos de los que nunca se obtiene res
 
 A raíz de estas observaciones, podemos concluir algunas cosas:
 \begin{itemize}
-  \item O bien la red no provee de salida a Internet, o bien la salida a Internet está distribuida en diferentes nodos de la red, pues de ser así veríamos una estructura más centralizada en un único nodo.
+  \item O bien la red no provee de salida a Internet, o bien la salida a Internet está distribuida en diferentes nodos de la red, pues de no ser así veríamos una estructura más centralizada en un único nodo.
   \item Probablemente en algún momento hubo dispositivos en las IPs 10.10.99.25, 10.10.99.123, 10.10.99.137, 10.10.99.138, pero estos ya no forman parte de la red.
   \item Los dispositivos que aún pertenecen a la red, como el 213 o el 34 no parecen estar enterados que los otros dispositivos ya no existen.
   \item El dispositivo 213 parece estar configurado para conectarse con las IPs 10.10.99.137, 10.10.99.138, ya que constantemente intenta preguntar si algún dispositivo se encuentra en estas. Esto puede deberse por ejemplo a algun protocolo que quedó configurado en el dispositivo, que redirige el tráfico de cierto puerto a esas IPs.
