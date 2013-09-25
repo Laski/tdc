@@ -134,49 +134,24 @@ emisores de 2.85760098357 y en los receptores de 3.08636573523.
 \end{figure}
 
 Como se puede observar claramente en las figuras \ref{fig:torta-inv} y 
-\ref{fig:barras-facu}, hay una gran presencia del dispositivo con la IP 10.10.99.213 cuyo comportamiento se limita a generar paquetes ARP y envíarlos, nunca es el destino de una consulta who-is. Por otro lado, a éste lo siguen dos dispositivos que tienen la misma cantidad de apariciones en los paquetes: las IPs 10.10.99.138 y 10.10.99.137. En las capturas, estos dos dispositivos se encuentran siempre como IPs destino, es decir, IPs por las cuales se consulta o se informa a qué MAC corresponde.
+\ref{fig:barras-inv}, hay una gran presencia del dispositivo con la IP 10.10.99.213 cuyo comportamiento se limita a generar paquetes ARP y envíarlos, nunca es el destino de una consulta who-is. Por otro lado, a éste lo siguen dos dispositivos de igual cantidad de apariciones en los paquetes: las IPs 10.10.99.138 y 10.10.99.137. En las capturas, estos dos dispositivos se encuentran siempre como IPs destino, es decir, IPs por las cuales se consulta o se informa a qué MAC corresponde.
  
-En la figura \ref{fig:hist2d-facu} podemos ver la interacción que se corresponde con estos dispositivos. Vemos que casi la totalidad de los paquetes envíados por el dispositivo 213 están dirigidos a los dispositivos 137, 138 o 123. 	
-También en el histograma se puede visualizar las peticiones que recibe el dispositivo 35, que ya podíamos ver en el gráfico de barras era receptor de varios paquetes. Pregunta por
-varias IPs distintas y también es consultado por varias otras.
+En la figura \ref{fig:hist2d-inv} podemos ver la interacción que se corresponde con estos dispositivos. Vemos que casi la totalidad de los paquetes envíados por el dispositivo 213 están dirigidos a los dispositivos 137 y 138. Contrastando esto con los datos de los paquetes capturados vemos que el dispositivo 213 envía constantemente paquetes who-is preguntando por las IP 137 y 138, pero no se obtiene ninguna respuesta.
+Además de esto, el histograma nos muestra la interacción entre otros nodos de la red. El gráfico muestra al menos otros 5 nodos que son parte de esta interacción, lo interesante es que estos nodos no se conectan de manera centralizada.
 
-En las figuras \ref{fig:barras-facu} y \ref{fig:hist2d-facu} se observa
-que la mayor parte de las IPs disponibles (tomando en cuenta solo las que
-comienzan por ``10.2.100'') fueron usadas en algún momento de la captura.
+Otros nodos que solo actuan de receptores de paquetes son el 35 y el 123. En la figura \ref{fig:hist2d-inv} y en el dump de capturas podemos ver que los que hacen peticiones sobre el nodo 135 son el nodo 34 y el 161. Y los que hacen peticiones sobre el 123 son el 212, 214 y 160.
 
-En contadas ocasiones (apreciables tanto en el dump de la captura
-como en las figuras \ref{fig:barras-facu} y \ref{fig:hist2d-facu}), apareció la
-IP 0.0.0.0 (la única que no comienza con ``10.2.100'') como emisora de
-solicitudes ARP con distintos destinos. Investigando un poco, descubrimos que
-esta es una IP que se utiliza para dispositivos que no están conectados a
-ninguna red TCP/IP. Es también una IP ficticia que se usa para representar
-direcciones inválidas, a menudo impresoras mal configuradas, paquetes con emisor
-desconocido, o cuando DHCP falla o tarda demasiado tiempo.
+A diferencia del experimento en los laboratorios del DC, vemos que en las oficinas de InvGate sí existen consultas entre nodos distintos, esto nos da una pauta de que el comportamiento de la red no está centralizado en un nodo particular, sino que está distribuido entre los nodos existentes.
 
-También descubrimos que, salvo por las consultas autorreferenciales y las que
-involucran a 10.2.100.254 y a 0.0.0.0, las consultas entre nodos distintos son
-inexistentes.
+Por otro lado es necesario aclarar que los nodos de los que nunca se obtiene respuesta, como el 25, 123, 137 y 138 probablemente sean dispositivos que no existen.
 
 A raíz de estas observaciones, podemos concluir algunas cosas:
 \begin{itemize}
-  \item El router de la red seguramente se encuentra en 10.2.100.254, y
-probablemente sea el nodo de salida a Internet.
-  \item En 10.2.100.98 probablemente haya un dispositivo que estaba configurado
-para renovar sus tablas ARP en intervalos cortos.
-  \item Hay ocasiones en las que DHCP falla y deja dispositivos sin IP, o bien
-hay dispositivos enviando paquetes con IPs emisoras inválidas o secretos. En
-cualquier caso, esto arruina la función de ARP, ya que nadie puede
-responder a una IP que no es ruteable.
-  \item Por momentos los dispositivos tienen leves síntomas de
-esquizofrenia.
-  \item Más allá de las preguntas por sí mismos y las consultas al router, no
-existen consultas entre dispositivos. Mientras duró la captura ninguno de ellos
-trató de comunicarse con otro.
-  \item Todo esto nos lleva a pensar que la función principal de la red es
-proveer de salida a Internet a los dispositivos que se conecten a ella, más que
-permitirles la comunicación directa entre dispositivos de la misma red.
-  \item La cantidad de dispositivos conectados a la red es grande.  Esto podría
-explicar la sobrecarga del servidor de DHCP, que falla o tarda mucho tiempo en
-asignar IPs a los nuevos dispositivos. 
+  \item O bien la red no provee de salida a Internet, o bien la salida a Internet está distribuida en diferentes nodos de la red, pues de ser así veríamos una estructura más centralizada en un único nodo.
+  \item Probablemente en algún momento hubo dispositivos en las IPs 10.10.99.25, 10.10.99.123, 10.10.99.137, 10.10.99.138, pero estos ya no forman parte de la red.
+  \item Los dispositivos que aún pertenecen a la red, como el 213 o el 34 no parecen estar enterados que los otros dispositivos ya no existen.
+  \item El dispositivo 213 parece estar configurado para conectarse con las IPs 10.10.99.137, 10.10.99.138, ya que constantemente intenta preguntar si algún dispositivo se encuentra en estas. Esto puede deberse por ejemplo a algun protocolo que quedó configurado en el dispositivo, que redirige el tráfico de cierto puerto a esas IPs.
+  \item Todo esto nos lleva a pensar que la función de la red es más compleja que simplemente proveer Internet. Probablemente se trate de varios dispositivos que cumplen cada uno una función particular y se interrelacionan, como por ejemplo computadoras de trabajo, impresoras que reciben información de estas computadoras, dispositivos móviles.
+  \item Esta hipótesis parece llevarse bien con el hecho de que la red elegida pertenece a un lugar de trabajo de desarrollo de software.
 \end{itemize}
 
