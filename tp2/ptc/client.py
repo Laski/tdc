@@ -95,6 +95,8 @@ class PTCClientProtocol(object):
         self.socket.send(packet)
         
     def send_and_queue_packet(self, packet):
+        print("Voy a mandar el paquete número: "),
+        print(str(packet.get_seq_number()))
         self.send_packet(packet)
         self.retransmission_queue.put(packet)
         
@@ -164,6 +166,8 @@ class PTCClientProtocol(object):
         if self.state == ESTABLISHED and self.control_block.accept_ack(packet):
             self.retransmission_queue.acknowledge(packet)
             self.clear_retransmission_attempts(packet.get_ack_number())
+            print("Recibí el ack número: "),
+            print(str(packet.get_ack_number()))
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()
