@@ -47,12 +47,15 @@ class ClientControlBlock(ProtocolControlBlock):
         return ACKFlag in packet and packet.get_ack_number() == self.get_send_seq()
         
     def accept_ack(self, packet):
-        if ACKFlag in packet: # asumimos que el numero de ack corresponde a un paquete enviado
-            self.window_lo = packet.get_ack_number() + 1
+        if ACKFlag in packet and self.is_sent_packet(packet.get_ack_number()):
+            self.window_lo = self.modular_sum(packet.get_ack_number(), 1)
             self.window_hi = self.modular_sum(self.window_lo, self.send_window)
             return True
         else:
             return False
+
+    def is_sent_packet(ack):
+        return (self.window_lo <= ack <= self.window_hi) or (self.window_hi <= ack <= self.window_lo)
 
     def increment_send_seq(self):
         self.send_seq += 1
