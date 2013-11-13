@@ -119,8 +119,7 @@ class PTCServerProtocol(object):
             
     def send_ack(self):
         ack_packet = self.build_packet(flags=[ACKFlag])
-        if random.randint(1, 11) > 1:
-            self.send_packet(ack_packet)
+        self.send_packet(ack_packet)
         
     def shutdown(self):
         self.worker.stop()
