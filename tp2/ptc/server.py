@@ -12,6 +12,7 @@
 
 
 import threading
+import random
 
 from common import PacketBuilder, ProtocolControlBlock
 from soquete import Soquete
@@ -88,7 +89,7 @@ class PTCServerProtocol(object):
         # No hay mucho por hacer... simplemente esperar a que caiga el SYN del cliente
         self.connected_event = threading.Event()
         self.connected_event.wait()     
-        
+
     def handle_incoming(self, packet):
         seq_number = packet.get_seq_number()
         print ("Recibi el paquete numero: "),
@@ -118,7 +119,8 @@ class PTCServerProtocol(object):
             
     def send_ack(self):
         ack_packet = self.build_packet(flags=[ACKFlag])
-        self.send_packet(ack_packet)
+        if random.randint(1, 11) > 1:
+            self.send_packet(ack_packet)
         
     def shutdown(self):
         self.worker.stop()
