@@ -44,15 +44,18 @@ class ClientControlBlock(ProtocolControlBlock):
         return self.send_window
     
     def accept_control_ack(self, packet):
-        return ACKFlag in packet and packet.get_ack_number() == self.get_send_seq()
+        return packet.get_ack_number() == self.modular_sum(self.get_send_seq(), -1) and self.accept_ack(packet)
         
     def accept_ack(self, packet):
-        if ACKFlag in packet: # asumimos que el numero de ack corresponde a un paquete enviado
-            self.window_lo = packet.get_ack_number() + 1
+        if ACKFlag in packet and self.is_sent_packet(packet.get_ack_number()):
+            self.window_lo = self.modular_sum(packet.get_ack_number(), 1)
             self.window_hi = self.modular_sum(self.window_lo, self.send_window)
             return True
         else:
             return False
+
+    def is_sent_packet(self, ack):
+        return (self.window_lo <= ack <= self.window_hi) or (self.window_hi <= ack <= self.window_lo)
 
     def increment_send_seq(self):
         self.send_seq += 1
@@ -64,8 +67,10 @@ class ClientControlBlock(ProtocolControlBlock):
         while res >= MAX_SEQ:
             res -= MAX_SEQ
             res += 1 # evitamos el 0
+	while res <= 0:
+	    res += MAX_SEQ
         return res
-    
+
     # Responde True sii la ventana de emisión no está saturada.
     def send_allowed(self):
         return self.send_seq < self.window_hi        
@@ -86,12 +91,17 @@ class PTCClientProtocol(object):
         
     def build_packet(self, payload=None, flags=None):
         seq = self.control_block.get_send_seq()
-        if payload is not None:
-            self.control_block.increment_send_seq()
+        #if payload is not None:
+        self.control_block.increment_send_seq()
         packet = self.packet_builder.build(payload=payload, flags=flags, seq=seq)
         return packet
         
     def send_packet(self, packet):
+        print("Voy a mandar el paquete número: "),
+        print(str(packet.get_seq_number()))
+	if random.randint(1, 11) == 1:
+            # simulo congestión
+            return
         self.socket.send(packet)
         
     def send_and_queue_packet(self, packet):
@@ -117,29 +127,21 @@ class PTCClientProtocol(object):
         self.connected_event.wait()
     
     def handle_timeout(self):
+	print ("Parece que se perdió un paquete, voy a reenviar.")
+	new_queue = RetransmissionQueue(self)
         for packet in self.retransmission_queue:
             if packet not in self.retransmission_attempts:
-                self.retransmission_attempts[packet] = 0
-            self.retransmission_attempts[packet] += 1
-            if self.retransmission_attempts[packet] >= MAX_RETRANSMISSION_ATTEMPTS:
+                self.retransmission_attempts[packet.get_seq_number()] = 0
+            self.retransmission_attempts[packet.get_seq_number()] += 1
+            if self.retransmission_attempts[packet.get_seq_number()] >= MAX_RETRANSMISSION_ATTEMPTS:
                 self.shutdown()
                 self.error =  "Intentos de retransmisión superó el máximo"
                 break
             else:
                 self.send_packet(packet)
+		new_queue.put(packet)
+	self.retransmission_queue = new_queue
         
-        ###################
-        ##   Completar!  ##
-        ###################
-        
-        # Tener en cuenta que se debe:
-        # (1) Obtener los paquetes en self.retranmission_queue
-        # (2) Volver a enviarlos
-        # (3) Reencolarlos para otra eventual retransmisión
-        # ...y verificar que no se exceda la cantidad máxima de reenvíos!
-        # (hacer self.shutdown() si esto ocurre y dejar un mensaje en self.error)
-        
-    
     def handle_pending_data(self):
         more_data_pending = False
         
@@ -164,6 +166,8 @@ class PTCClientProtocol(object):
         if self.state == ESTABLISHED and self.control_block.accept_ack(packet):
             self.retransmission_queue.acknowledge(packet)
             self.clear_retransmission_attempts(packet.get_ack_number())
+            print("Recibí el ack número: "),
+            print(str(packet.get_ack_number()))
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()
@@ -187,9 +191,9 @@ class PTCClientProtocol(object):
             # Ok
             
     def clear_retransmission_attempts(self, ack):
-        for packet in self.retransmission_attempts.keys():
-            if packet.get_seq_number() <= ack:
-                del self.retransmission_attempts[packet]
+        for seq_number in self.retransmission_attempts.keys():
+            if seq_number <= ack:
+                del self.retransmission_attempts[seq_number]
             
     def handle_close_connection(self):
         if not self.outgoing_buffer.empty():
