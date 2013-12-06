@@ -1,21 +1,21 @@
 www.uh.cu
-192.168.0.1		Argentina
-181.167.38.1		Argentina
+192.168.0.1	Argentina
+181.167.38.1	Argentina
 200.89.165.33	Argentina
-200.89.165.2		Argentina
+200.89.165.2	Argentina
 200.89.165.101	Argentina
 200.89.165.86	Argentina
 200.89.165.85	Argentina
-200.89.165.1		Argentina
+200.89.165.1	Argentina
 200.89.165.250	Argentina
-64.209.94.97		EUA
-67.16.139.65		EUA
-67.16.139.65		EUA
+64.209.94.97	EUA
+67.16.139.65	EUA
+67.16.139.65	EUA
 213.140.53.109	España
-176.52.255.6		España
+176.52.255.6	España
 94.142.118.33	España
 94.142.118.45	España
-200.0.16.73		Cuba
+200.0.16.73	Cuba
 
 www.cuhk.edu.hk
 1  192.168.0.1     11  Argentina
@@ -32,7 +32,7 @@ www.cuhk.edu.hk
 16 203.188.117.34  11  Hong Kong
 17 137.189.192.250 11  Hong Kong
 18 137.189.9.57    11  Hong Kong
-19 137.189.11.73   SA	  Hong Kong
+19 137.189.11.73   SA	Hong Kong
 
 www.msu.ru
 1  192.168.0.1     11 Argentina
