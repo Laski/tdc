@@ -37,9 +37,15 @@ facultad es siempre ``10.2.100'' y en la del trabajo de nuestro compañero
 Los resultados y análisis se exponen a continuación.
 
 \subsection{Laboratorios del DC}
+
 Con un total de 200 paquetes ARP capturados, obtuvimos una entropía en los
 emisores de 2.81763365265 y en los receptores de 4.20465276111.
 
+\subsubsection{Análisis de entropía}
+Una primera observación que podemos hacer es que la entropía de los receptores es significativamente mayor que la de los emisores. Esto quiere decir que hay más incertidumbre en quién va a ser receptor que en quién va a ser emisor, esto probablemente se deba a que hay menos nodos que funcionan como emisores en comparación con los que funcionan como receptores, o que hay un conjunto reducido de nodos que tienen una alta probabilidad de ser emisores.
+
+
+\subsubsection{Análisis de capturas}
 \begin{figure}[!h]
   \includegraphics[width=\textwidth,keepaspectratio]{graph/torta-facu.png}
   \caption{Proporción de IPs de los primeros 5 minutos de captura}
