@@ -22,12 +22,11 @@ from buffers import DataBuffer, RetransmissionQueue, NotEnoughDataException
 from constants import MIN_PACKET_SIZE, MAX_PACKET_SIZE, CLOSED,\
                       ESTABLISHED, FIN_SENT, SYN_SENT, MAX_SEQ,\
                       SEND_WINDOW, MAX_RETRANSMISSION_ATTEMPTS
-
 import time
 
 debug = False
-t1
-t2
+t1 = 0
+f = open("tiempos", "a")
 
 class ClientControlBlock(ProtocolControlBlock):
     
@@ -118,6 +117,8 @@ class PTCClientProtocol(object):
         if not self.is_connected():
             raise Exception('cannot send data: connection not established')
         self.worker.send(data)
+        global t1
+        t1 = time.time()
 
     def connect_to(self, address, port):
         self.worker = ClientProtocolWorker.spawn_for(self)
@@ -133,7 +134,7 @@ class PTCClientProtocol(object):
         self.connected_event.wait()
     
     def handle_timeout(self):
-        if(debug):
+        if(debug or True):
             print ("Parece que se perdió un paquete, voy a reenviar.")
         new_queue = RetransmissionQueue(self)
         for packet in self.retransmission_queue:
@@ -178,6 +179,11 @@ class PTCClientProtocol(object):
                 print(str(packet.get_ack_number()))
             if self.outgoing_buffer.empty() and self.retransmission_queue.empty():
                 print("Recibi el ultimo ack")
+                print time.time() - t1
+                global f
+                f.write(str(time.time() - t1))
+                f.write("\n")
+                f.close()
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()
