@@ -68,8 +68,8 @@ class ClientControlBlock(ProtocolControlBlock):
         while res >= MAX_SEQ:
             res -= MAX_SEQ
             res += 1 # evitamos el 0
-    while res <= 0:
-        res += MAX_SEQ
+        while res <= 0:
+            res += MAX_SEQ
         return res
 
     # Responde True sii la ventana de emisión no está saturada.
