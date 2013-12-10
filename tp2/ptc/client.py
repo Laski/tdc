@@ -170,10 +170,10 @@ class PTCClientProtocol(object):
             self.retransmission_queue.acknowledge(packet)
             self.clear_retransmission_attempts(packet.get_ack_number())
             if(debug):
-				print("Recibí el ack número: "),
-				print(str(packet.get_ack_number()))
-			if(self.outgoing_buffer.empty() and self.retransmission_queue.empty()):
-				print("Recibi el ultimo ack")
+		        print("Recibí el ack número: "),
+		        print(str(packet.get_ack_number()))
+		    if(self.outgoing_buffer.empty() and self.retransmission_queue.empty()):
+		        print("Recibi el ultimo ack")
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()
