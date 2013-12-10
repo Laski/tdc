@@ -164,8 +164,6 @@ class PTCClientProtocol(object):
         
         if more_data_pending:
             self.worker.signal_pending_data()
-        else:
-			print "No hay mas pending data"
     
     def handle_incoming(self, packet):
         if self.state == ESTABLISHED and self.control_block.accept_ack(packet):
@@ -174,6 +172,8 @@ class PTCClientProtocol(object):
             if(debug):
 				print("Recibí el ack número: "),
 				print(str(packet.get_ack_number()))
+			if self.outgoing_buffer.empty() and self.retransmission_queue.empty():
+				print("Recibi el ultimo ack")
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()
