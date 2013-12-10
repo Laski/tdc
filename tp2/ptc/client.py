@@ -26,7 +26,9 @@ import time
 
 debug = False
 t1 = 0
-f = open("tiempos", "a")
+f = open("tiempos_2", "a")
+frets = open("rets", "a")
+count_rets = 0
 
 class ClientControlBlock(ProtocolControlBlock):
     
@@ -35,7 +37,7 @@ class ClientControlBlock(ProtocolControlBlock):
         # Próximo SEQ a enviar
         self.send_seq = random.randint(1, MAX_SEQ)
         # Tamaño de la ventana de emisión
-        self.send_window = SEND_WINDOW
+        self.send_window = 1
         # Límite inferior de la ventana (i.e., unacknowledged)
         self.window_lo = self.send_seq
         # Límite superior de la ventana
@@ -134,6 +136,8 @@ class PTCClientProtocol(object):
         self.connected_event.wait()
     
     def handle_timeout(self):
+        global count_rets
+        count_rets += 1
         if(debug or True):
             print ("Parece que se perdió un paquete, voy a reenviar.")
         new_queue = RetransmissionQueue(self)
@@ -180,10 +184,14 @@ class PTCClientProtocol(object):
             if self.outgoing_buffer.empty() and self.retransmission_queue.empty():
                 print("Recibi el ultimo ack")
                 print time.time() - t1
-                global f
+                global f, frets, count_rets
+
                 f.write(str(time.time() - t1))
                 f.write("\n")
                 f.close()
+                frets.write(str(count_rets))
+                frets.write("\n")
+                frets.close()
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()
