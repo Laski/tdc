@@ -23,7 +23,11 @@ from constants import MIN_PACKET_SIZE, MAX_PACKET_SIZE, CLOSED,\
                       ESTABLISHED, FIN_SENT, SYN_SENT, MAX_SEQ,\
                       SEND_WINDOW, MAX_RETRANSMISSION_ATTEMPTS
 
+import time
+
 debug = False
+t1
+t2
 
 class ClientControlBlock(ProtocolControlBlock):
     
@@ -101,9 +105,9 @@ class PTCClientProtocol(object):
         if(debug):
             print("Voy a mandar el paquete número: "),
             print(str(packet.get_seq_number()))
-        if random.randint(1, 11) == 1:
+        #if random.randint(1, 11) == 1:
             # simulo congestión
-            return
+        #    return
         self.socket.send(packet)
         
     def send_and_queue_packet(self, packet):
