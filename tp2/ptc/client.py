@@ -142,7 +142,7 @@ class PTCClientProtocol(object):
                 break
             else:
                 self.send_packet(packet)
-        new_queue.put(packet)
+            new_queue.put(packet)
         self.retransmission_queue = new_queue
         
     def handle_pending_data(self):
