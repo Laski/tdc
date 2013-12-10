@@ -132,17 +132,17 @@ class PTCClientProtocol(object):
 		if(debug):
 			print ("Parece que se perdió un paquete, voy a reenviar.")
 		new_queue = RetransmissionQueue(self)
-			for packet in self.retransmission_queue:
-				if packet not in self.retransmission_attempts:
-					self.retransmission_attempts[packet.get_seq_number()] = 0
-				self.retransmission_attempts[packet.get_seq_number()] += 1
-				if self.retransmission_attempts[packet.get_seq_number()] >= MAX_RETRANSMISSION_ATTEMPTS:
-					self.shutdown()
-					self.error =  "Intentos de retransmisión superó el máximo"
-					break
-				else:
-					self.send_packet(packet)
-			new_queue.put(packet)
+		for packet in self.retransmission_queue:
+			if packet not in self.retransmission_attempts:
+				self.retransmission_attempts[packet.get_seq_number()] = 0
+			self.retransmission_attempts[packet.get_seq_number()] += 1
+			if self.retransmission_attempts[packet.get_seq_number()] >= MAX_RETRANSMISSION_ATTEMPTS:
+				self.shutdown()
+				self.error =  "Intentos de retransmisión superó el máximo"
+				break
+			else:
+				self.send_packet(packet)
+		new_queue.put(packet)
 		self.retransmission_queue = new_queue
         
     def handle_pending_data(self):
