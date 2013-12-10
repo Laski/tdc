@@ -164,6 +164,8 @@ class PTCClientProtocol(object):
         
         if more_data_pending:
             self.worker.signal_pending_data()
+        else:
+			print "No hay mas pending data"
     
     def handle_incoming(self, packet):
         if self.state == ESTABLISHED and self.control_block.accept_ack(packet):
