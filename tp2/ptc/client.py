@@ -101,9 +101,9 @@ class PTCClientProtocol(object):
         if(debug):
             print("Voy a mandar el paquete número: "),
             print(str(packet.get_seq_number()))
-    #if random.randint(1, 11) == 1:
+        if random.randint(1, 11) == 1:
             # simulo congestión
-    #        return
+            return
         self.socket.send(packet)
         
     def send_and_queue_packet(self, packet):
