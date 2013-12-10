@@ -23,6 +23,7 @@ from constants import MIN_PACKET_SIZE, MAX_PACKET_SIZE, CLOSED,\
                       ESTABLISHED, FIN_SENT, SYN_SENT, MAX_SEQ,\
                       SEND_WINDOW, MAX_RETRANSMISSION_ATTEMPTS
 
+debug = False
 
 class ClientControlBlock(ProtocolControlBlock):
     
@@ -97,8 +98,9 @@ class PTCClientProtocol(object):
         return packet
         
     def send_packet(self, packet):
-        print("Voy a mandar el paquete número: "),
-        print(str(packet.get_seq_number()))
+        if(debug):
+			print("Voy a mandar el paquete número: "),
+			print(str(packet.get_seq_number()))
 	#if random.randint(1, 11) == 1:
             # simulo congestión
     #        return
@@ -127,20 +129,21 @@ class PTCClientProtocol(object):
         self.connected_event.wait()
     
     def handle_timeout(self):
-	print ("Parece que se perdió un paquete, voy a reenviar.")
-	new_queue = RetransmissionQueue(self)
-        for packet in self.retransmission_queue:
-            if packet not in self.retransmission_attempts:
-                self.retransmission_attempts[packet.get_seq_number()] = 0
-            self.retransmission_attempts[packet.get_seq_number()] += 1
-            if self.retransmission_attempts[packet.get_seq_number()] >= MAX_RETRANSMISSION_ATTEMPTS:
-                self.shutdown()
-                self.error =  "Intentos de retransmisión superó el máximo"
-                break
-            else:
-                self.send_packet(packet)
-		new_queue.put(packet)
-	self.retransmission_queue = new_queue
+		if(debug):
+			print ("Parece que se perdió un paquete, voy a reenviar.")
+		new_queue = RetransmissionQueue(self)
+			for packet in self.retransmission_queue:
+				if packet not in self.retransmission_attempts:
+					self.retransmission_attempts[packet.get_seq_number()] = 0
+				self.retransmission_attempts[packet.get_seq_number()] += 1
+				if self.retransmission_attempts[packet.get_seq_number()] >= MAX_RETRANSMISSION_ATTEMPTS:
+					self.shutdown()
+					self.error =  "Intentos de retransmisión superó el máximo"
+					break
+				else:
+					self.send_packet(packet)
+			new_queue.put(packet)
+		self.retransmission_queue = new_queue
         
     def handle_pending_data(self):
         more_data_pending = False
@@ -166,8 +169,9 @@ class PTCClientProtocol(object):
         if self.state == ESTABLISHED and self.control_block.accept_ack(packet):
             self.retransmission_queue.acknowledge(packet)
             self.clear_retransmission_attempts(packet.get_ack_number())
-            print("Recibí el ack número: "),
-            print(str(packet.get_ack_number()))
+            if(debug):
+				print("Recibí el ack número: "),
+				print(str(packet.get_ack_number()))
         elif self.state == SYN_SENT and self.control_block.accept_control_ack(packet):
             self.state = ESTABLISHED
             self.connected_event.set()

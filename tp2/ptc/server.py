@@ -23,6 +23,7 @@ from constants import MIN_PACKET_SIZE, CLOSED,\
                       ESTABLISHED,\
                       FIN_RECEIVED, RECV_WINDOW
 
+debug = False
 
 class ServerControlBlock(ProtocolControlBlock):
     
@@ -92,8 +93,9 @@ class PTCServerProtocol(object):
 
     def handle_incoming(self, packet):
         seq_number = packet.get_seq_number()
-        print ("Recibi el paquete numero: "),
-        print (seq_number)
+        if(debug):
+			print ("Recibi el paquete numero: "),
+			print (seq_number)
         if SYNFlag in packet:
             self.control_block.set_destination_address(packet.get_source_ip())
             self.control_block.set_destination_port(packet.get_source_port())
