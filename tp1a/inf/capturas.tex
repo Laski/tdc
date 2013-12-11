@@ -10,7 +10,7 @@ La herramienta que desarrollamos captura todos los paquetes de tipo ARP que
 circulen en la red mediante el comando $sniff()$ del paquete Scapy. Por cada
 paquete guardamos diferentes datos: la IP destino (de dispositivo nodo se quiere
 averiguar la MAC), la IP origen (qué dispositivo es el que quiere averiguarla),
-y el tipo de paquete (who-has o is-at). De esta manera, la fuente de información
+y el tipo de paquete (who-has o is-at). También podrían guardarse los datos de las MAC Address origen y destino de cada paquete, simplemente analizando la cabecera del Ethernet Frame. Como explicamos más adelante, elegimos las direcciones IP como simbolos y es por eso que no nos percatamos de guardar las MAC Address. De esta manera, la fuente de información
 que queda definida es la red visible al nodo desde el que estamos capturando
 paquetes, y el conjunto de simbolos de esta fuente son las direcciones IP de los
 nodos.

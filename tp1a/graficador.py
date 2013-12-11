@@ -17,7 +17,7 @@ def leer_entrada():
 	tuplas_txt[0] = tuplas_txt[0].strip("[")
 	tuplas_txt[-1] = tuplas_txt[-1].rstrip(")]\n")
 	tuplas_txt = [tupla + ")" for tupla in tuplas_txt]
-	#tuplas_txt = tuplas_txt[0:50]
+	#tuplas_txt = tuplas_txt[0:250:2]
 	
 	senders = [tupla.split("'")[1] for tupla in tuplas_txt]
 	recievers = [tupla.split("'")[3] for tupla in tuplas_txt]
@@ -34,8 +34,14 @@ def get_host(ip):
 def get_host_lista(ips):
 	return [get_host(ip) for ip in ips]
 
-def torta(sin_repetidas):
-	sizes = [todos.count(ip) for ip in sin_repetidas]
+def torta(ips, sin_repetidas):
+	sizes = [(ip,ips.count(ip)) for ip in sin_repetidas]
+	    
+	sizes = sorted(sizes, key=lambda tup: tup[1])
+	
+	sin_repetidas = [tup[0] for tup in sizes]
+	sizes = [tup[1] for tup in sizes]
+    
 	colors = ['yellowgreen', 'gold', 'lightskyblue', 'lightcoral', 'blue', 'red', 'orange', 'yellow', 'white'] * 10
 	plt.pie(sizes, labels=sin_repetidas, autopct='%1.1f%%', shadow=True, colors=colors)
 	plt.axis('equal')
@@ -53,7 +59,7 @@ def histograma(todos):
 def histograma2d(senders, recievers):
 	senders_hosts = get_host_lista(senders)
 	recievers_hosts = get_host_lista(recievers)
-	H, xedges, yedges = np.histogram2d(recievers_hosts, senders_hosts, bins=100)
+	H, xedges, yedges = np.histogram2d(recievers_hosts, senders_hosts, bins=50)
 	#plt.colorbar()
 	extent = [0, 255, 255, 0]
 	plt.xlabel("Emisores")
@@ -96,8 +102,11 @@ def barras(sin_repetidas, senders, recievers):
 senders, recievers, types = leer_entrada()
 todos = senders + recievers
 sin_repetidas = list(set(todos))
-
-barras(sin_repetidas, senders, recievers)
-torta(sin_repetidas)
+sr_senders = list(set(senders))
+sr_rec = list(set(recievers))
+#barras(sin_repetidas, senders, recievers)
+#torta(todos, sin_repetidas)
+#torta(senders, sr_senders)
+#torta(recievers, sr_rec)
 #histograma(todos)
 histograma2d(senders, recievers)
