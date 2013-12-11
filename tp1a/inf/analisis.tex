@@ -34,6 +34,7 @@ facultad es siempre ``10.2.100'' y en la del trabajo de nuestro compañero
 
 Los resultados y análisis se exponen a continuación.
 
+
 \subsection{Laboratorios del DC}
 
 Con un total de 200 paquetes ARP capturados, obtuvimos una entropía en los
@@ -48,13 +49,13 @@ Más adelante, junto con la información que nos brindan los otros gráficos, ve
 \subsubsection{Análisis de capturas}
 \begin{figure}[!h]
   \includegraphics[width=\textwidth,keepaspectratio]{graph/emisores_facu.png}
-  \caption{Proporción de IPs origen en los primeros 5 minutos de captura}
+  \caption{Proporción de IPs origen}
   \label{fig:torta-emisor-facu}
 \end{figure}
 
 \begin{figure}[!h]
   \includegraphics[width=\textwidth,keepaspectratio]{graph/receptores_facu.png}
-  \caption{Proporción de IPs destino en los primeros 5 minutos de captura}
+  \caption{Proporción de IPs destino}
   \label{fig:torta-receptor-facu}
 \end{figure}
 
@@ -138,14 +139,20 @@ Más adelante vemos que el hecho de que la cantidad de información de receptore
 \subsubsection{Análisis de capturas}
 \begin{figure}[!h]
   \includegraphics[width=\textwidth,keepaspectratio]{graph/emisores_somodi.png}
-  \caption{Proporción de IPs origen en los primeros 5 minutos de captura}
+  \caption{Proporción de IPs origen}
   \label{fig:torta-emisor-inv}
 \end{figure}
 
 \begin{figure}[!h]
   \includegraphics[width=\textwidth,keepaspectratio]{graph/receptores_somodi.png}
-  \caption{Proporción de IPs destino en los primeros 5 minutos de captura}
+  \caption{Proporción de IPs destino}
   \label{fig:torta-receptor-inv}
+\end{figure}
+
+\begin{figure}[!h]
+  \includegraphics[width=\textwidth,keepaspectratio]{graph/barras-invgate.png}
+  \caption{Cantidad de paquetes por IP discriminados en emisores y receptores}
+  \label{fig:barras-inv}
 \end{figure}
 
 \begin{figure}[!h]
@@ -155,7 +162,7 @@ Más adelante vemos que el hecho de que la cantidad de información de receptore
 \end{figure}
 
 Como se puede observar claramente en las figuras \ref{fig:torta-emisor-inv} y  
-\ref{fig:barras-inv}, hay una gran presencia del dispositivo con la IP 10.10.99.213 cuyo comportamiento se limita a generar paquetes ARP y enviarlos. Como vemos en la figura \ref{fig:torta-receptor-inv} nunca es el destino de una consulta who-is. Por otro lado, a éste lo siguen dos dispositivos de igual cantidad de apariciones en los paquetes: las IPs 10.10.99.138 y 10.10.99.137. A diferencia del nodo 213, podemos ver en los gráficos de torta que estos nodos solo se encuentran como IPs destino, es decir, IPs por las cuales se consulta o se informa a qué MAC corresponde.
+\ref{fig:barras-inv}, hay una gran presencia del dispositivo con la IP 10.10.99.213 cuyo comportamiento se limita a generar paquetes ARP y enviarlos. Como vemos en la figura \ref{fig:torta-receptor-inv} casi nunca es el destino de una consulta who-is. Por otro lado, a éste lo siguen dos dispositivos de igual cantidad de apariciones en los paquetes: las IPs 10.10.99.138 y 10.10.99.137. A diferencia del nodo 213, podemos ver en los gráficos de torta que estos nodos solo se encuentran como IPs destino, es decir, IPs por las cuales se consulta o se informa a qué MAC corresponde.
 
 La figura \ref{fig:hist2d-inv} nos muestra la interacción de los nodos que tienen una cantidad de actividad considerable. Esto se debe a que la escala de cantidad de paquetes enviados llega a mas de 5400, con lo cual los nodos que no tengan una actividad en orden de cientos de paquetes no están reflejados. Esto no es un problema porque nos permite concentrar nuestra atención la interacción en aquellos nodos que tiene un rol activo en la red. Como vemos más adelante esta actividad no está concentrada solo en uno o un par de nodos.
 Podemos ver la interacción que se corresponde con estos dispositivos. Vemos que casi la totalidad de los paquetes envíados por el dispositivo 213 están dirigidos a los dispositivos 137 y 138.  Contrastando esto con los datos de los paquetes capturados vemos que el dispositivo 213 envía constantemente paquetes who-is preguntando por las IP 137 y 138, pero no se obtiene ninguna respuesta.
